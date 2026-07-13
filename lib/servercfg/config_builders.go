@@ -171,6 +171,7 @@ func buildFeatureConfig(r valueReader) FeatureConfig {
 		AllowTunnelNumLimit:     r.boolDefault(false, namespacedKeys("feature", "allow_tunnel_num_limit")...),
 		AllowLocalProxy:         r.boolDefault(false, namespacedKeys("feature", "allow_local_proxy")...),
 		AllowSecretLocal:        r.boolDefault(false, namespacedKeys("feature", "allow_secret_local")...),
+		AllowDeviceEnrollment:   r.boolDefault(false, namespacedKeys("feature", "allow_device_enrollment", "device_enrollment")...),
 		SystemInfoDisplay:       r.boolDefault(false, namespacedKeys("feature", "system_info_display")...),
 		AllowPorts:              r.stringValue(namespacedKeys("feature", "allow_ports")...),
 	}

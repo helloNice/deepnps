@@ -230,7 +230,7 @@ func actionRouteMiddlewares(state *State, spec webapi.ActionSpec) []gin.HandlerF
 	if strings.HasPrefix(spec.Path, "/api/") {
 		middlewares = append(middlewares, managementNoStoreMiddleware())
 	}
-	if spec.Method == http.MethodPost && (strings.HasPrefix(spec.Path, "/api/auth/") || spec.Path == "/api/access/ip-limit/actions/register") {
+	if spec.Method == http.MethodPost && (strings.HasPrefix(spec.Path, "/api/auth/") || spec.Path == "/api/access/ip-limit/actions/register" || strings.HasPrefix(spec.Path, "/api/devices/")) {
 		middlewares = append(middlewares, loginBodyLimitMiddleware(state))
 		middlewares = append(middlewares, apiInputMiddleware())
 	}
@@ -1312,6 +1312,8 @@ func isFormalManagementAPIRequest(path string) bool {
 	case path == "/api/auth", strings.HasPrefix(path, "/api/auth/"):
 		return true
 	case path == "/api/access", strings.HasPrefix(path, "/api/access/"):
+		return true
+	case path == "/api/devices", strings.HasPrefix(path, "/api/devices/"):
 		return true
 	case path == "/api/webhooks", strings.HasPrefix(path, "/api/webhooks/"):
 		return true

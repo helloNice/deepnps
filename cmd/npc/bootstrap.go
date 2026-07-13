@@ -328,6 +328,11 @@ func run(ctx context.Context, cancel context.CancelFunc) {
 		return
 	}
 	hasCommand := applyLegacyEnvironmentDefaults()
+	if shouldTryZeroTouch(hasCommand) {
+		if handled := runZeroTouchMode(ctx, cancel); handled {
+			return
+		}
+	}
 	runLegacyCommandAndConfig(ctx, cancel, hasCommand)
 }
 

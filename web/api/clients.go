@@ -33,6 +33,9 @@ type nodeClientResourcePayload struct {
 	SourceType             string `json:"source_type,omitempty"`
 	SourcePlatformID       string `json:"source_platform_id,omitempty"`
 	SourceActorID          string `json:"source_actor_id,omitempty"`
+	DevicePublicKey        string `json:"device_public_key,omitempty"`
+	DeviceKeyID            string `json:"device_key_id,omitempty"`
+	DeviceEnrolledAt       int64  `json:"device_enrolled_at,omitempty"`
 	Revision               int64  `json:"revision"`
 	UpdatedAt              int64  `json:"updated_at"`
 	BridgeInBytes          int64  `json:"bridge_in_bytes"`
@@ -368,6 +371,9 @@ func newNodeClientResource(client *file.Client) nodeClientResourcePayload {
 	payload.SourceType = client.SourceType
 	payload.SourcePlatformID = client.SourcePlatformID
 	payload.SourceActorID = client.SourceActorID
+	payload.DevicePublicKey = client.DevicePublicKey
+	payload.DeviceKeyID = client.DeviceKeyID
+	payload.DeviceEnrolledAt = client.DeviceEnrolledAt
 	payload.Revision = client.Revision
 	payload.UpdatedAt = client.UpdatedAt
 	payload.BridgeInBytes, payload.BridgeOutBytes, payload.BridgeTotalBytes = client.BridgeTrafficTotals()

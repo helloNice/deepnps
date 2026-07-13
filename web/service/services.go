@@ -27,6 +27,7 @@ type Services struct {
 	Users                           UserService
 	Globals                         GlobalService
 	Index                           IndexService
+	DeviceEnrollment                DeviceEnrollmentService
 }
 
 func BindDefaultServices(services Services, configProvider func() *servercfg.Snapshot) Services {
@@ -54,6 +55,7 @@ func BindDefaultServices(services Services, configProvider func() *servercfg.Sna
 	services.Users = bindUserService(services.Users, configProvider, repo, runtime, backend)
 	services.Globals = bindGlobalService(services.Globals, services.LoginPolicy, repo, backend)
 	services.Index = bindIndexService(services.Index, repo, runtime, backend)
+	services.DeviceEnrollment = bindDeviceEnrollmentService(services.DeviceEnrollment, configProvider, repo, backend)
 	services.ManagementPlatforms = bindManagementPlatformStore(services.ManagementPlatforms, repo, backend)
 	services.NodeControl = bindNodeControlService(services.NodeControl, services.System, services.Authz, repo, runtime, backend)
 	return services
@@ -84,6 +86,7 @@ func MergeServices(base, overrides Services) Services {
 	mergeOptionalService(&merged.Users, overrides.Users)
 	mergeOptionalService(&merged.Globals, overrides.Globals)
 	mergeOptionalService(&merged.Index, overrides.Index)
+	mergeOptionalService(&merged.DeviceEnrollment, overrides.DeviceEnrollment)
 	return merged
 }
 
@@ -456,6 +459,28 @@ func bindIndexService(service IndexService, repo Repository, runtime Runtime, ba
 		}
 		if current.QuotaStore == nil {
 			current.QuotaStore = DefaultQuotaStore{}
+		}
+		current.Backend = backend
+		return current
+	default:
+		return service
+	}
+}
+
+func bindDeviceEnrollmentService(service DeviceEnrollmentService, configProvider func() *servercfg.Snapshot, repo Repository, backend Backend) DeviceEnrollmentService {
+	if isNilServiceValue(service) {
+		return NewDefaultDeviceEnrollmentService(configProvider, repo, backend)
+	}
+	switch current := service.(type) {
+	case *DefaultDeviceEnrollmentService:
+		if current == nil {
+			return NewDefaultDeviceEnrollmentService(configProvider, repo, backend)
+		}
+		if current.ConfigProvider == nil {
+			current.ConfigProvider = configProvider
+		}
+		if current.Repo == nil {
+			current.Repo = repo
 		}
 		current.Backend = backend
 		return current

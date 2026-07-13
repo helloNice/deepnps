@@ -48,6 +48,7 @@ type RequiredFeature string
 
 const (
 	RequiredFeatureAllowUserRegister RequiredFeature = "allow_user_register"
+	RequiredFeatureDeviceEnrollment  RequiredFeature = "allow_device_enrollment"
 )
 
 var (
@@ -70,6 +71,14 @@ func SessionActionCatalog(app *App) []ActionSpec {
 		},
 		{Resource: "session", Action: "logout", Method: http.MethodPost, Path: "/api/auth/session/logout", Handler: app.SessionLogout},
 		{Resource: "access", Action: "ip_limit_register", Method: http.MethodPost, Path: "/api/access/ip-limit/actions/register", Handler: app.RegisterIPLimitAccess},
+		{
+			Resource: "devices", Action: "enrollment_challenge", Method: http.MethodPost, Path: "/api/devices/enrollment/challenge",
+			RequiredFeatures: []RequiredFeature{RequiredFeatureDeviceEnrollment}, Handler: app.DeviceEnrollmentChallenge,
+		},
+		{
+			Resource: "devices", Action: "enrollment_complete", Method: http.MethodPost, Path: "/api/devices/enrollment/complete",
+			RequiredFeatures: []RequiredFeature{RequiredFeatureDeviceEnrollment}, Handler: app.DeviceEnrollmentComplete,
+		},
 	}
 }
 
@@ -384,6 +393,8 @@ func requiredFeatureEnabled(cfg *servercfg.Snapshot, feature RequiredFeature) bo
 	switch feature {
 	case RequiredFeatureAllowUserRegister:
 		return cfg != nil && cfg.Feature.AllowUserRegister
+	case RequiredFeatureDeviceEnrollment:
+		return cfg != nil && cfg.Feature.AllowDeviceEnrollment
 	default:
 		return true
 	}

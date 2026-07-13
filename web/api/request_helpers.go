@@ -320,6 +320,24 @@ func managementErrorCode(err error) string {
 		return "client_modify_failed"
 	case errors.Is(err, webservice.ErrModeRequired):
 		return "mode_required"
+	case errors.Is(err, webservice.ErrDeviceEnrollmentDisabled):
+		return "device_enrollment_disabled"
+	case errors.Is(err, webservice.ErrDeviceEnrollmentRateLimited):
+		return "device_enrollment_rate_limited"
+	case errors.Is(err, webservice.ErrDeviceChallengeNotFound):
+		return "device_challenge_not_found"
+	case errors.Is(err, webservice.ErrDeviceChallengeExpired):
+		return "device_challenge_expired"
+	case errors.Is(err, webservice.ErrDevicePublicKeyRequired):
+		return "device_public_key_required"
+	case errors.Is(err, webservice.ErrDevicePublicKeyInvalid):
+		return "device_public_key_invalid"
+	case errors.Is(err, webservice.ErrDeviceSignatureInvalid):
+		return "device_signature_invalid"
+	case errors.Is(err, webservice.ErrDeviceChallengeAlreadyUsed):
+		return "device_challenge_already_used"
+	case errors.Is(err, webservice.ErrDeviceEnrollmentCreateFailed):
+		return "device_enrollment_create_failed"
 	default:
 		return "request_failed"
 	}

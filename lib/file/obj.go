@@ -85,6 +85,9 @@ type Client struct {
 	SourceType        string
 	SourcePlatformID  string
 	SourceActorID     string
+	DevicePublicKey   string
+	DeviceKeyID       string
+	DeviceEnrolledAt  int64
 	Revision          int64
 	UpdatedAt         int64
 	ExpectedRevision  int64 `json:"-"`

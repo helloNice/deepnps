@@ -732,6 +732,44 @@ func TestLoadClientFromJsonFileTrimsVerifyKeyForLookupAndIndex(t *testing.T) {
 	}
 }
 
+func TestClientDeviceIdentityFieldsSurviveJSONAndConfigClone(t *testing.T) {
+	resetMigrationTestDB(t)
+
+	db := GetDb()
+	payload := []byte(`[{
+  "Id":7,
+  "VerifyKey":"device-vkey",
+  "DevicePublicKey":"PUBKEY",
+  "DeviceKeyID":"key-id",
+  "DeviceEnrolledAt":1700000000,
+  "Status":true,
+  "Cnf":{},
+  "Flow":{"ExportFlow":0,"InletFlow":0}
+}]`)
+	if err := os.WriteFile(db.JsonDb.ClientFilePath, payload, 0o600); err != nil {
+		t.Fatalf("WriteFile(clients.json) error = %v", err)
+	}
+
+	db.JsonDb.LoadClientFromJsonFile()
+
+	stored, err := db.GetClient(7)
+	if err != nil {
+		t.Fatalf("GetClient(7) error = %v", err)
+	}
+	if stored.DevicePublicKey != "PUBKEY" || stored.DeviceKeyID != "key-id" || stored.DeviceEnrolledAt != 1700000000 {
+		t.Fatalf("stored device fields = %q/%q/%d", stored.DevicePublicKey, stored.DeviceKeyID, stored.DeviceEnrolledAt)
+	}
+
+	snapshot := buildConfigSnapshot(db)
+	if len(snapshot.Clients) != 1 {
+		t.Fatalf("snapshot clients = %d, want 1", len(snapshot.Clients))
+	}
+	cloned := snapshot.Clients[0]
+	if cloned.DevicePublicKey != "PUBKEY" || cloned.DeviceKeyID != "key-id" || cloned.DeviceEnrolledAt != 1700000000 {
+		t.Fatalf("config clone device fields = %q/%q/%d", cloned.DevicePublicKey, cloned.DeviceKeyID, cloned.DeviceEnrolledAt)
+	}
+}
+
 func TestLoadClientFromJsonFileClearsRemovedClientsOnReload(t *testing.T) {
 	resetMigrationTestDB(t)
 

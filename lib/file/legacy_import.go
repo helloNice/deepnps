@@ -65,6 +65,9 @@ func (c *Client) applyJSONAlias(decoded *clientJSONAlias) {
 	c.SourceType = decoded.SourceType
 	c.SourcePlatformID = decoded.SourcePlatformID
 	c.SourceActorID = decoded.SourceActorID
+	c.DevicePublicKey = decoded.DevicePublicKey
+	c.DeviceKeyID = decoded.DeviceKeyID
+	c.DeviceEnrolledAt = decoded.DeviceEnrolledAt
 	c.Revision = decoded.Revision
 	c.UpdatedAt = decoded.UpdatedAt
 	c.VerifyKey = decoded.VerifyKey

@@ -277,6 +277,21 @@ func TestLoadJSONNamespacedRuntimeAndProxyValues(t *testing.T) {
 	}
 }
 
+func TestDeviceEnrollmentConfigDefaultsOffAndCanBeEnabled(t *testing.T) {
+	resetTestState(t)
+	if Current().Feature.AllowDeviceEnrollment {
+		t.Fatal("default AllowDeviceEnrollment = true, want false")
+	}
+
+	path := writeConfig(t, "nps.conf", "allow_device_enrollment=true\n")
+	if err := Load(path); err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	if !Current().Feature.AllowDeviceEnrollment {
+		t.Fatal("AllowDeviceEnrollment = false, want true from config")
+	}
+}
+
 func TestReload(t *testing.T) {
 	resetTestState(t)
 

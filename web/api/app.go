@@ -275,6 +275,19 @@ func (a *App) system() webservice.SystemService {
 	return webservice.DefaultSystemService{}
 }
 
+func (a *App) deviceEnrollment() webservice.DeviceEnrollmentService {
+	if a != nil && !isNilAppServiceValue(a.Services.DeviceEnrollment) {
+		return a.Services.DeviceEnrollment
+	}
+	var configProvider func() *servercfg.Snapshot
+	backend := webservice.DefaultBackend()
+	if a != nil {
+		configProvider = a.ConfigProvider
+		backend = a.backend()
+	}
+	return webservice.NewDefaultDeviceEnrollmentService(configProvider, backend.Repository, backend)
+}
+
 func isNilAppServiceValue(value interface{}) bool {
 	if value == nil {
 		return true

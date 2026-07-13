@@ -81,6 +81,7 @@ type FeatureConfig struct {
 	AllowLocalProxy         bool
 	AllowUserLocal          bool
 	AllowSecretLocal        bool
+	AllowDeviceEnrollment   bool
 	SystemInfoDisplay       bool
 	AllowPorts              string
 }
